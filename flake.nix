@@ -10,6 +10,11 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        pythonEnv = pkgs.python3.withPackages (p: [ p.huggingface-hub ]);
+        download-model = pkgs.writeScriptBin "download-model" ''
+          #!${pythonEnv}/bin/python
+          ${builtins.readFile ./download_model.py}
+        '';
       in
       {
         packages.default = pkgs.stdenv.mkDerivation {
@@ -56,11 +61,14 @@
           };
         };
 
+        packages.download-model = download-model;
+
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.gnumake
             pkgs.gcc
             pkgs.openblas
+            download-model
           ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
             pkgs.darwin.apple_sdk.frameworks.Accelerate
             pkgs.darwin.apple_sdk.frameworks.Metal
