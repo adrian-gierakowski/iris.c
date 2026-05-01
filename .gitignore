@@ -27,3 +27,4 @@ documents/
 *.a
 *.so
 *.dylib
+result
