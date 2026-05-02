@@ -61,6 +61,11 @@
             pkgs.gnumake
             pkgs.gcc
             pkgs.openblas
+            (pkgs.python3.withPackages (ps: [
+              ps.huggingface-hub
+              ps.numpy
+              ps.pillow
+            ]))
           ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
             pkgs.darwin.apple_sdk.frameworks.Accelerate
             pkgs.darwin.apple_sdk.frameworks.Metal
